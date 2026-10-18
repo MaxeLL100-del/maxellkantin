@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pesan Makanan Kantin</title>
+<meta name="description" content="Pilih menu, pesan dari ponsel, dan pantau status pesanan kantin.">
+<meta name="theme-color" content="#FFF8ED">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="progress" aria-hidden="true"></div>
+<a class="skip" href="#main">Lewati ke konten</a>
+
+<header class="nav">
+  <a class="brand" href="#/" aria-label="Beranda"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#F97316"/><path d="M8 17h16a8 8 0 0 1-16 0z" fill="#fff"/><path d="M12 12c0-2 2-2 2-4m4 4c0-2 2-2 2-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg><span>Kantin</span></a>
+  <nav aria-label="Navigasi utama">
+    <a href="#/" data-route="home">Beranda</a><a href="#/menu" data-route="menu">Menu</a><a href="#/status" data-route="status">Status</a>
+  </nav>
+  <button class="cartbtn" id="cartBtn" aria-label="Buka keranjang"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><b id="cartCount" aria-live="polite">0</b></button>
+</header>
+
+<main id="main" tabindex="-1">
+<section id="home" data-view>
+  <div class="hero">
+    <div class="blob b1" aria-hidden="true"></div><div class="blob b2" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <p class="eyebrow">Pemesanan kantin</p>
+      <h1 class="reveal-words">Lapar? Pesan Favoritmu!</h1>
+      <p class="lead">Makanan favoritmu, tinggal pilih. Pesan mudah, nikmati lebih nyaman.</p>
+      <div class="cta"><a class="btn primary" data-magnetic href="#/menu">Pesan Sekarang</a><a class="btn ghost" href="#steps">Jelajahi Menu</a></div>
+    </div>
+    <div class="scene" id="scene">
+      <div class="stage">
+        <span class="ing i1" aria-hidden="true"></span><span class="ing i2" aria-hidden="true"></span><span class="ing i3" aria-hidden="true"></span>
+        <div class="plate">
+          <svg viewBox="0 0 400 300" role="img" aria-label="Ilustrasi sepiring nasi dengan ayam dan lalapan">
+            <defs><radialGradient id="pl" cx=".4" cy=".3" r=".9"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e7e5e4"/></radialGradient><radialGradient id="rc" cx=".4" cy=".25"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#efe4cf"/></radialGradient><linearGradient id="ck" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f5a04a"/><stop offset="1" stop-color="#b8530d"/></linearGradient></defs>
+            <ellipse cx="200" cy="258" rx="150" ry="20" fill="#292524" opacity=".16"/>
+            <ellipse cx="200" cy="205" rx="168" ry="64" fill="url(#pl)"/><ellipse cx="200" cy="200" rx="128" ry="45" fill="#f5f5f4"/>
+            <path d="M108 196c8-72 176-72 184 0-46 26-138 26-184 0z" fill="url(#rc)"/>
+            <ellipse cx="262" cy="170" rx="44" ry="26" transform="rotate(-18 262 170)" fill="url(#ck)"/><ellipse cx="232" cy="186" rx="38" ry="22" transform="rotate(12 232 186)" fill="url(#ck)"/>
+            <circle cx="120" cy="198" r="15" fill="#6aa84f"/><circle cx="120" cy="198" r="9" fill="#cfe8b9"/><circle cx="150" cy="212" r="14" fill="#6aa84f"/><circle cx="150" cy="212" r="8" fill="#cfe8b9"/>
+            <path d="M285 204q18-10 30 0q-14 10-30 0z" fill="#dc2626"/>
+          </svg>
+          <span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true"><div><span>Pilih menu</span><span>Tambah ke keranjang</span><span>Kirim pesanan</span><span>Pantau status</span><span>Ambil &amp; nikmati</span><span>Pilih menu</span><span>Tambah ke keranjang</span><span>Kirim pesanan</span><span>Pantau status</span><span>Ambil &amp; nikmati</span></div></div>
+  <section class="wrap" id="steps">
+    <h2 class="reveal">Cara memesan</h2>
+    <ol class="steps">
+      <li class="flip reveal"><div><b>1</b><h3>Pilih menu</h3><p>Cari atau saring berdasarkan kategori.</p></div></li>
+      <li class="flip reveal"><div><b>2</b><h3>Isi keranjang</h3><p>Atur jumlah dan tambahkan catatan.</p></div></li>
+      <li class="flip reveal"><div><b>3</b><h3>Kirim pesanan</h3><p>Isi nama dan pilih ambil atau antar ke meja.</p></div></li>
+      <li class="flip reveal"><div><b>4</b><h3>Pantau status</h3><p>Simpan kode pesanan, lihat prosesnya.</p></div></li>
+    </ol>
+    <h2 class="reveal">Kategori</h2>
+    <div class="chips" id="homeCats"></div>
+  </section>
+</section>
+
+<section id="menu" data-view hidden>
+  <div class="wrap">
+    <h2>Menu</h2>
+    <label class="search"><span class="sr">Cari menu</span><input id="q" type="search" placeholder="Cari menu…" autocomplete="off"></label>
+    <div class="chips" id="menuCats" role="group" aria-label="Filter kategori"></div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="status" data-view hidden>
+  <div class="wrap narrow">
+    <h2>Status pesanan</h2>
+    <form id="lookup" class="lookup"><label for="code">Kode pesanan</label><div><input id="code" placeholder="K-XXXXXX" autocomplete="off" required maxlength="20"><button class="btn primary">Cek</button></div></form>
+    <div id="track" aria-live="polite"></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot"><p>Pembayaran dilakukan di kasir. Data menu, harga, dan stok berasal dari database.</p></footer>
+
+<aside class="drawer" id="drawer" aria-label="Keranjang" aria-hidden="true" inert></aside>
+<div class="scrim" id="scrim" hidden></div>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

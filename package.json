@@ -1,0 +1,12 @@
+{
+  "name": "pemesanan-kantin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "migrate": "node --env-file=.env scripts/migrate.mjs",
+    "seed": "node --env-file=.env scripts/migrate.mjs --seed"
+  },
+  "dependencies": { "@neondatabase/serverless": "^1.0.0" }
+}

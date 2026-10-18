@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Admin Kantin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap">
+<link rel="stylesheet" href="/css/style.css">
+<style>body{padding-top:0}.bar{display:flex;gap:8px;align-items:center;padding:14px 20px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}.bar h1{font-size:20px;margin-right:auto}
+.rows{display:grid;gap:12px}.rw{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px}.rw header{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.f2{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}.f2 input,.f2 select{width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}select.st{min-height:44px;border-radius:12px;padding:0 10px;border:1px solid var(--line)}</style></head>
+<body>
+<div id="login" class="wrap narrow"><h1>Admin</h1><form id="lf" class="field" style="margin-top:20px"><label for="pw">Kata sandi</label><input id="pw" type="password" autocomplete="current-password" required><p class="err" id="le" role="alert"></p><button class="btn primary">Masuk</button></form></div>
+<div id="app" hidden>
+<div class="bar"><h1>Dasbor Kantin</h1><button class="btn ghost" data-tab="orders">Pesanan</button><button class="btn ghost" data-tab="menu">Menu</button><button class="btn ghost" id="out">Keluar</button></div>
+<div class="wrap"><p class="err" id="ge" role="alert"></p>
+<section id="t-orders"><div class="rows" id="orders"></div></section>
+<section id="t-menu" hidden><form id="pf" class="f2"><input type="hidden" name="id"><input name="name" placeholder="Nama menu" required maxlength="80"><input name="description" placeholder="Deskripsi" maxlength="200"><input name="price" type="number" min="0" placeholder="Harga (Rp)" required><input name="stock" type="number" min="0" placeholder="Stok" required><select name="category_id" id="pc"></select><input name="image_url" placeholder="URL gambar https:// (opsional)"><select name="available"><option value="true">Ditampilkan</option><option value="false">Disembunyikan</option></select><button class="btn primary">Simpan</button></form><div class="rows" id="prods"></div></section></div></div>
+<script type="module">
+const $=(s)=>document.querySelector(s),rp=(n)=>'Rp'+Number(n).toLocaleString('id-ID'),esc=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tok=sessionStorage.getItem('adm'),P=[];
+async function api(a,body,m){const r=await fetch('/api/admin?a='+a,{method:m||(body?'POST':'GET'),headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:body?JSON.stringify(body):undefined});const d=await r.json().catch(()=>({}));if(r.status===401&&a!=='login'){out();throw new Error(d.error)}if(!r.ok)throw new Error(d.error||'Gagal');return d}
+const err=(e)=>($('#ge').textContent=e.message||'');
+function out(){sessionStorage.removeItem('adm');tok=null;$('#app').hidden=true;$('#login').hidden=false}
+function show(){$('#login').hidden=true;$('#app').hidden=false;orders();menu()}
+$('#lf').onsubmit=async(e)=>{e.preventDefault();try{tok=(await api('login',{password:$('#pw').value})).token;sessionStorage.setItem('adm',tok);$('#pw').value='';show()}catch(x){$('#le').textContent=x.message}};
+$('#out').onclick=out;
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{$('#t-orders').hidden=b.dataset.tab!=='orders';$('#t-menu').hidden=b.dataset.tab!=='menu'});
+const ST=['baru','diproses','siap','selesai','dibatalkan'];
+async function orders(){try{err({});const o=await api('orders');$('#orders').innerHTML=o.map(x=>`<div class="rw"><header><b>${esc(x.code)} · ${esc(x.customer_name)}</b><span>${rp(x.total)}</span></header><span>${x.pickup==='antar'?'Antar ke meja '+esc(x.table_no):'Ambil di kantin'} · ${new Date(x.created_at).toLocaleString('id-ID')}</span><ul style="padding-left:18px">${x.items.map(i=>`<li>${i.qty}× ${esc(i.name)}${i.note?' ('+esc(i.note)+')':''}</li>`).join('')}</ul>${x.note?`<i>Catatan: ${esc(x.note)}</i>`:''}<label>Status <select class="st" data-id="${x.id}" ${x.status==='dibatalkan'?'disabled':''}>${ST.map(s=>`<option ${s===x.status?'selected':''}>${s}</option>`).join('')}</select></label></div>`).join('')||'<p class="empty">Belum ada pesanan.</p>'}catch(x){err(x)}}
+$('#orders').onchange=async(e)=>{if(!e.target.dataset.id)return;if(e.target.value==='dibatalkan'&&!confirm('Batalkan pesanan? Stok akan dikembalikan dan status tidak bisa diubah lagi.')){return orders()}try{await api('status',{id:+e.target.dataset.id,status:e.target.value});orders()}catch(x){err(x);orders()}};
+async function menu(){try{const d=await api('products');P=d.products;$('#pc').innerHTML='<option value="">Tanpa kategori</option>'+d.categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');$('#prods').innerHTML=P.map(p=>`<div class="rw"><header><b>${esc(p.name)}</b><span>${rp(p.price)} · stok ${p.stock} · ${p.available?'tampil':'tersembunyi'}</span></header><button class="btn ghost" data-edit="${p.id}">Ubah</button></div>`).join('')||'<p class="empty">Belum ada menu.</p>'}catch(x){err(x)}}
+$('#prods').onclick=(e)=>{const p=P.find(x=>x.id==e.target.dataset.edit);if(!p)return;const f=$('#pf');for(const k of ['id','name','description','price','stock','image_url'])f.elements[k].value=p[k]??'';f.elements.category_id.value=p.category_id??'';f.elements.available.value=String(p.available);scrollTo(0,0)};
+$('#pf').onsubmit=async(e)=>{e.preventDefault();const f=e.target,b=Object.fromEntries(new FormData(f));b.id=b.id||undefined;b.category_id=b.category_id||null;b.available=b.available==='true';try{await api('product',b);f.reset();err({});menu()}catch(x){err(x)}};
+if(tok)show();
+</script></body></html>
